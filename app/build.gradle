@@ -26,7 +26,6 @@ dependencies {
     //support for parse
     compile 'com.parse.bolts:bolts-android:1.+'
     compile files('libs/Parse-1.10.2.jar')
-
     compile 'com.fabiendevos:nanotasks:1.1.0'
-
+    compile files('libs/ParseFacebookUtilsV3-1.10.2.jar')
 }
