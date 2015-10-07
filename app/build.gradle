@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.appedidos.parseinnovaapp"
-        minSdkVersion 10
+        minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -19,13 +19,38 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+
+    compile project(":parseLoginUI")
+    compile project(":facebookSDK")
+
     compile 'com.android.support:appcompat-v7:23.0.1'
-    //support for parse
-    compile 'com.parse.bolts:bolts-android:1.+'
-    compile files('libs/Parse-1.10.2.jar')
+
+    //tasks in background
     compile 'com.fabiendevos:nanotasks:1.1.0'
-    compile files('libs/ParseFacebookUtilsV3-1.10.2.jar')
+
+    //material drawer
+    compile('com.mikepenz:materialdrawer:3.1.2@aar') {
+        transitive = true
+    }
+
+    //descarga imagenes
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    //pull to refresh
+    compile 'com.yalantis:phoenix:1.2.2'
+
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+
+    compile 'com.twotoasters.jazzylistview:library:1.2.1'
+
+    //rss reader
+    compile 'com.einmalfel:earl:1.0.0'
+
+
 }
