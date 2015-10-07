@@ -74,7 +74,7 @@ public class RSSLisxtAdapter extends ArrayAdapter<RSSItem> {
         holder.tvDate.setText(Utils.dateToString(data.get(position).getPublicationDate()));
 
 
-        holder.tvTitle.setText("Facebook "+position+" de "+data.size());
+        holder.tvTitle.setText("Trabajo "+position+" de "+data.size());
 
         Matcher m = Pattern.compile(" (?:src)=\"([^\"]+)").matcher(data.get(position).getDescription());
         if (m.find()) {
