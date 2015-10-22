@@ -24,6 +24,7 @@ import com.einmalfel.earl.AtomEntry;
 import com.einmalfel.earl.RSSItem;
 import com.squareup.picasso.Picasso;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,11 +36,11 @@ public class RSSLisxtAdapter extends ArrayAdapter<RSSItem> {
 
     private ParseInnovaApp app;
     private Context context;
-    private List<RSSItem> data;
+    private LinkedList<RSSItem> data;
     private int layoutId;
     private SparseBooleanArray collapsedContent;
 
-    public RSSLisxtAdapter(Context context, List<RSSItem> data) {
+    public RSSLisxtAdapter(Context context, LinkedList<RSSItem> data) {
         super(context, R.layout.item_face_news, data);
         this.context = context;
         this.data = data;
@@ -97,6 +98,11 @@ public class RSSLisxtAdapter extends ArrayAdapter<RSSItem> {
         Linkify.addLinks(holder.tvContent, Linkify.ALL);
 
         return row;
+    }
+
+    public void removeElement(int position){
+        this.data.remove(0);
+        this.notifyDataSetChanged();
     }
 
     public String stripHtml(String html) {

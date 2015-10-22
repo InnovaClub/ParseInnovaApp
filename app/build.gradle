@@ -52,5 +52,6 @@ dependencies {
     //rss reader
     compile 'com.einmalfel:earl:1.0.0'
 
+    compile 'com.lorentzos.swipecards:library:1.0.9'
 
 }

@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.facebook.AppEventsLogger;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
+import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.FontAwesome;
@@ -62,6 +64,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -84,13 +88,13 @@ public class MainActivity extends AppCompatActivity {
     private static final String RSS_URI = "http://www.prospects.ac.uk/rss/accountancy-_banking_and_finance.rss";
 
     //data to be shown
-    private List<RSSItem> data;
+    private LinkedList<RSSItem> data;
 
     //the adapter for the list
     private RSSLisxtAdapter adapter;
 
     //the list
-    private JazzyListView list;
+    private SwipeFlingAdapterView list;
 
     //to make request http
     private OkHttpClient client = new OkHttpClient();
@@ -106,9 +110,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle Toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         buildDrawer();
-
         getRSSData();
 
     }
@@ -350,7 +352,12 @@ public class MainActivity extends AppCompatActivity {
                             .build();
                     com.squareup.okhttp.Response response = client.newCall(request).execute();
                     Feed feed = EarlParser.parseOrThrow(response.body().byteStream(), 0);
-                    data = (List<RSSItem>) feed.getItems();
+                    if (data!=null){
+                        data.clear();
+                    } else {
+                        data = new LinkedList<RSSItem>();
+                    }
+                    data.addAll((Collection<? extends RSSItem>) feed.getItems());
                 } catch (Exception e) {
                     return e.getMessage();
                 } finally {
@@ -385,20 +392,58 @@ public class MainActivity extends AppCompatActivity {
     private void refresh() {
         if (data != null) {
             adapter = new RSSLisxtAdapter(this, data);
+
             list.setAdapter(adapter);
+            list.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+                @Override
+                public void removeFirstObjectInAdapter() {
+                    // this is the simplest way to delete an object from the Adapter (/AdapterView)
+                    adapter.removeElement(0);
+                }
+
+                @Override
+                public void onLeftCardExit(Object dataObject) {
+                    makeToast(MainActivity.this, "No me gusta!");
+                }
+
+                @Override
+                public void onRightCardExit(Object dataObject) {
+                    makeToast(MainActivity.this, "Me gusta!");
+                }
+
+                @Override
+                public void onAdapterAboutToEmpty(int itemsInAdapter) {
+
+                }
+
+                @Override
+                public void onScroll(float scrollProgressPercent) {
+
+                }
+            });
+
+
+            // Optionally add an OnItemClickListener
+            list.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClicked(int itemPosition, Object dataObject) {
+                    //makeToast(MainActivity.this, "Clicked!");
+                }
+            });
+
             adapter.notifyDataSetChanged();
         }
+    }
+
+    static void makeToast(Context ctx, String s){
+        Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
     }
 
     /**
      * Obtengo la lista y llamo al rss
      */
     public void getRSSData() {
-        list = (JazzyListView) findViewById(R.id.list);
-        list.setTransitionEffect(new SlideInEffect());
-
-        list.setSelector(android.R.color.transparent);
-
+        list = (SwipeFlingAdapterView) findViewById(R.id.frame);
         mPullToRefreshView = (PullToRefreshView) findViewById(R.id.pull_to_refresh);
         mPullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
